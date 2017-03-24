@@ -129,7 +129,7 @@ public class ContainerExecDecorator extends LauncherDecorator implements Seriali
                     try {
                         //We need to get into the project workspace.
                         //The workspace is not known in advance, so we have to execute a cd command.
-                        watch.getInput().write(String.format("cd \"%s\"%s", path, NEWLINE).getBytes(StandardCharsets.UTF_8));
+                        watch.getInput().write(String.format("cd \"%s\"%s", starter.pwd(), NEWLINE).getBytes(StandardCharsets.UTF_8));
                         doExec(watch, launcher.getListener().getLogger(), getCommands(starter));
 
                         break;
