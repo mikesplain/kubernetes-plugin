@@ -24,6 +24,7 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import hudson.model.Label;
+import hudson.model.Node;
 import hudson.tools.ToolLocationNodeProperty;
 
 import static org.csanchez.jenkins.plugins.kubernetes.ContainerTemplate.DEFAULT_WORKING_DIR;
@@ -105,6 +106,7 @@ public class PodTemplateUtils {
         String label = template.getLabel();
         String nodeSelector = Strings.isNullOrEmpty(template.getNodeSelector()) ? parent.getNodeSelector() : template.getNodeSelector();
         String serviceAccount = Strings.isNullOrEmpty(template.getServiceAccount()) ? parent.getServiceAccount() : template.getServiceAccount();
+        Node.Mode nodeUsageMode = template.getNodeUsageMode() == null ? parent.getNodeUsageMode() : template.getNodeUsageMode();
 
         Set<PodImagePullSecret> imagePullSecrets = new LinkedHashSet<>();
         imagePullSecrets.addAll(parent.getImagePullSecrets());
@@ -137,6 +139,7 @@ public class PodTemplateUtils {
 
         PodTemplate podTemplate = new PodTemplate();
         podTemplate.setName(name);
+        podTemplate.setNamespace(!Strings.isNullOrEmpty(template.getNamespace()) ? template.getNamespace() : parent.getNamespace());
         podTemplate.setLabel(label);
         podTemplate.setNodeSelector(nodeSelector);
         podTemplate.setServiceAccount(serviceAccount);
@@ -146,6 +149,8 @@ public class PodTemplateUtils {
         podTemplate.setVolumes(new ArrayList<>(combinedVolumes.values()));
         podTemplate.setImagePullSecrets(new ArrayList<>(imagePullSecrets));
         podTemplate.setNodeProperties(toolLocationNodeProperties);
+        podTemplate.setNodeUsageMode(nodeUsageMode);
+
         return podTemplate;
     }
 
@@ -207,7 +212,7 @@ public class PodTemplateUtils {
      */
     public static PodTemplate getTemplateByLabel(@CheckForNull Label label, Collection<PodTemplate> templates) {
         for (PodTemplate t : templates) {
-            if (label == null || label.matches(t.getLabelSet())) {
+            if ((label == null && t.getNodeUsageMode() == Node.Mode.NORMAL) || (label != null && label.matches(t.getLabelSet()))) {
                 return t;
             }
         }

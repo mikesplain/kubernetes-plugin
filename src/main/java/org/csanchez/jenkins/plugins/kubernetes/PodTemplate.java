@@ -29,10 +29,11 @@ import hudson.model.AbstractDescribableImpl;
 import hudson.model.Descriptor;
 import hudson.model.Label;
 import hudson.model.labels.LabelAtom;
+import hudson.model.Node;
 
 /**
  * Kubernetes Pod Template
- * 
+ *
  * @author <a href="mailto:nicolas.deloof@gmail.com">Nicolas De Loof</a>
  */
 public class PodTemplate extends AbstractDescribableImpl<PodTemplate> implements Serializable {
@@ -48,6 +49,8 @@ public class PodTemplate extends AbstractDescribableImpl<PodTemplate> implements
     private String inheritFrom;
 
     private String name;
+
+    private String namespace;
 
     private String image;
 
@@ -72,6 +75,8 @@ public class PodTemplate extends AbstractDescribableImpl<PodTemplate> implements
     private String serviceAccount;
 
     private String nodeSelector;
+
+    private Node.Mode nodeUsageMode;
 
     private String resourceRequestCpu;
 
@@ -107,8 +112,10 @@ public class PodTemplate extends AbstractDescribableImpl<PodTemplate> implements
         this.setInstanceCap(from.getInstanceCap());
         this.setLabel(from.getLabel());
         this.setName(from.getName());
+        this.setNamespace(from.getNamespace());
         this.setInheritFrom(from.getInheritFrom());
         this.setNodeSelector(from.getNodeSelector());
+        this.setNodeUsageMode(from.getNodeUsageMode());
         this.setServiceAccount(from.getServiceAccount());
         this.setSlaveConnectTimeout(from.getSlaveConnectTimeout());
         this.setVolumes(from.getVolumes());
@@ -155,6 +162,15 @@ public class PodTemplate extends AbstractDescribableImpl<PodTemplate> implements
 
     public String getName() {
         return name;
+    }
+
+    public String getNamespace() {
+        return namespace;
+    }
+
+    @DataBoundSetter
+    public void setNamespace(String namespace) {
+        this.namespace = namespace;
     }
 
     @Deprecated
@@ -305,6 +321,20 @@ public class PodTemplate extends AbstractDescribableImpl<PodTemplate> implements
         return nodeSelector;
     }
 
+    @DataBoundSetter
+    public void setNodeUsageMode(Node.Mode nodeUsageMode) {
+        this.nodeUsageMode = nodeUsageMode;
+    }
+
+    @DataBoundSetter
+    public void setNodeUsageMode(String nodeUsageMode) {
+        this.nodeUsageMode = Node.Mode.valueOf(nodeUsageMode);
+    }
+
+    public Node.Mode getNodeUsageMode() {
+        return nodeUsageMode;
+    }
+
     @Deprecated
     @DataBoundSetter
     public void setPrivileged(boolean privileged) {
@@ -344,9 +374,17 @@ public class PodTemplate extends AbstractDescribableImpl<PodTemplate> implements
     }
 
     @DataBoundSetter
-    public void setEnvVars(List<PodEnvVar> envVars) {
+    public void addEnvVars(List<PodEnvVar> envVars) {
         if (envVars != null) {
             this.envVars.addAll(envVars);
+        }
+    }
+
+    @DataBoundSetter
+    public void setEnvVars(List<PodEnvVar> envVars) {
+        if (envVars != null) {
+            this.envVars.clear();
+            this.addEnvVars(envVars);
         }
     }
 
@@ -358,9 +396,19 @@ public class PodTemplate extends AbstractDescribableImpl<PodTemplate> implements
     }
 
     @DataBoundSetter
-    public void setAnnotations(List<PodAnnotation> annotations) {
+    public void addAnnotations(List<PodAnnotation> annotations) {
         this.annotations.addAll(annotations);
     }
+
+
+    @DataBoundSetter
+    public void setAnnotations(List<PodAnnotation> annotations) {
+        if (annotations != null) {
+            this.annotations = new ArrayList<PodAnnotation>();
+            this.addAnnotations(annotations);
+        }
+    }
+
 
     public List<PodImagePullSecret> getImagePullSecrets() {
         if (imagePullSecrets == null) {
@@ -370,8 +418,16 @@ public class PodTemplate extends AbstractDescribableImpl<PodTemplate> implements
     }
 
     @DataBoundSetter
-    public void setImagePullSecrets(List<PodImagePullSecret> imagePullSecrets) {
+    public void addImagePullSecrets(List<PodImagePullSecret> imagePullSecrets) {
         this.imagePullSecrets.addAll(imagePullSecrets);
+    }
+
+        @DataBoundSetter
+    public void setImagePullSecrets(List<PodImagePullSecret> imagePullSecrets) {
+        if(imagePullSecrets != null) {
+            this.imagePullSecrets.clear();
+            this.addImagePullSecrets(imagePullSecrets);
+        }
     }
 
     @DataBoundSetter
