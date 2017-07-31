@@ -19,6 +19,7 @@ import org.kohsuke.stapler.DataBoundSetter;
 import com.google.common.collect.ImmutableSet;
 
 import hudson.Extension;
+import hudson.model.Node;
 import hudson.model.Run;
 import hudson.model.TaskListener;
 
@@ -34,14 +35,18 @@ public class PodTemplateStep extends Step implements Serializable {
     private final String label;
     private final String name;
 
+    private String namespace;
     private List<ContainerTemplate> containers = new ArrayList<>();
     private List<PodVolume> volumes = new ArrayList<PodVolume>();
     private WorkspaceVolume workspaceVolume;
     private List<PodAnnotation> annotations = new ArrayList<>();
 
     private int instanceCap;
+    private int idleMinutes;
+
     private String serviceAccount;
     private String nodeSelector;
+    private Node.Mode nodeUsageMode;
     private String workingDir = ContainerTemplate.DEFAULT_WORKING_DIR;
 
     @DataBoundConstructor
@@ -56,6 +61,15 @@ public class PodTemplateStep extends Step implements Serializable {
 
     public String getName() {
         return name;
+    }
+
+    public String getNamespace() {
+        return namespace;
+    }
+
+    @DataBoundSetter
+    public void setNamespace(String namespace) {
+        this.namespace = namespace;
     }
 
     public String getCloud() {
@@ -112,6 +126,15 @@ public class PodTemplateStep extends Step implements Serializable {
         this.instanceCap = instanceCap;
     }
 
+    public int getIdleMinutes() {
+        return idleMinutes;
+    }
+
+    @DataBoundSetter
+    public void setIdleMinutes(int idleMinutes) {
+        this.idleMinutes = idleMinutes;
+    }
+
     public String getServiceAccount() {
         return serviceAccount;
     }
@@ -130,6 +153,20 @@ public class PodTemplateStep extends Step implements Serializable {
         this.nodeSelector = nodeSelector;
     }
 
+    public Node.Mode getNodeUsageMode() {
+        return nodeUsageMode;
+    }
+
+    @DataBoundSetter
+    public void setNodeUsageMode(Node.Mode nodeUsageMode) {
+        this.nodeUsageMode = nodeUsageMode;
+    }
+
+    @DataBoundSetter
+    public void setNodeUsageMode(String nodeUsageMode) {
+        this.nodeUsageMode = Node.Mode.valueOf(nodeUsageMode);
+    }
+    
     public String getWorkingDir() {
         return workingDir;
     }
