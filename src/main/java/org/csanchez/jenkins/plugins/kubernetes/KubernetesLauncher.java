@@ -466,9 +466,9 @@ public class KubernetesLauncher extends JNLPLauncher {
         return builder.build();
     }
 
-    private Map<String, String> getTolerationsMap(List<PodToleration> annotations) {
+    private Map<String, String, String, String> getTolerationsMap(List<PodToleration> tolerations) {
         ImmutableMap.Builder<String, String, String, String> builder = ImmutableMap.<String, String, String, String>builder();
-        if (annotations != null) {
+        if (tolerations != null) {
             for (PodToleration podToleration : tolerations) {
                 builder.put(podToleration.getKey(), substituteEnv(podToleration.getValue()));
             }

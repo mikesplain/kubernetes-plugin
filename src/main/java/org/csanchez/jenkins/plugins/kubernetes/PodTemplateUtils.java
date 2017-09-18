@@ -94,7 +94,7 @@ public class PodTemplateUtils {
         podAnnotations.addAll(parent.getAnnotations());
 
         Set<PodToleration> podTolerations = new LinkedHashSet<>();
-        podTolerations.addAll(template.podTolerations());
+        podTolerations.addAll(template.getTolerations());
         podTolerations.addAll(parent.getTolerations());
 
         Set<PodImagePullSecret> imagePullSecrets = new LinkedHashSet<>();
