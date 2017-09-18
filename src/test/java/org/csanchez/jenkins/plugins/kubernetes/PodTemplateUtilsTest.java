@@ -47,6 +47,10 @@ public class PodTemplateUtilsTest {
     private static final PodAnnotation ANNOTATION_2 = new PodAnnotation("key2", "value2");
     private static final PodAnnotation ANNOTATION_3 = new PodAnnotation("key1", "value3");
 
+    private static final PodToleration TOLERATION_1 = new PodAnnotation("key1", "value1", "Equal", "NoSchedule");
+    private static final PodToleration TOLERATION_2 = new PodAnnotation("key2", "value2", "Equal", "NoSchedule");
+    private static final PodToleration TOLERATION_3 = new PodAnnotation("key1", "value3", "Exists", "PreferNoSchedule");
+
     private static final ContainerTemplate JNLP_1 = new ContainerTemplate("jnlp", "jnlp:1");
     private static final ContainerTemplate JNLP_2 = new ContainerTemplate("jnlp", "jnlp:2");
 
@@ -163,6 +167,22 @@ public class PodTemplateUtilsTest {
         PodTemplate result = combine(parent, template1);
         assertEquals(2, result.getAnnotations().size());
         assertEquals("value3", result.getAnnotations().get(0).getValue().toString());
+    }
+
+    @Test
+    public void shouldCombineAllTolerations() {
+        PodTemplate parent = new PodTemplate();
+        parent.setName("parent");
+        parent.setNodeSelector("key:value");
+        parent.setTolerations(asList(TOLERATION_1, TOLERATION_2));
+
+        PodTemplate template1 = new PodTemplate();
+        template1.setName("template");
+        template1.setTolerations(asList(TOLERATION_4));
+
+        PodTemplate result = combine(parent, template1);
+        assertEquals(2, result.getTolerations().size());
+        assertEquals("value3", result.getTolerations().get(0).getValue().toString());
     }
 
 

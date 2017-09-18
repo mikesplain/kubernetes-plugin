@@ -276,6 +276,7 @@ public class KubernetesLauncher extends JNLPLauncher {
                 .withName(substituteEnv(slave.getNodeName()))
                 .withLabels(slave.getKubernetesCloud().getLabelsMap(template.getLabelSet()))
                 .withAnnotations(getAnnotationsMap(template.getAnnotations()))
+                .withTolerations(getTolerationsMap(template.getTolerations()))
                 .endMetadata()
                 .withNewSpec()
                 .withVolumes(volumes)
@@ -460,6 +461,16 @@ public class KubernetesLauncher extends JNLPLauncher {
         if (annotations != null) {
             for (PodAnnotation podAnnotation : annotations) {
                 builder.put(podAnnotation.getKey(), substituteEnv(podAnnotation.getValue()));
+            }
+        }
+        return builder.build();
+    }
+
+    private Map<String, String> getTolerationsMap(List<PodToleration> annotations) {
+        ImmutableMap.Builder<String, String, String, String> builder = ImmutableMap.<String, String, String, String>builder();
+        if (annotations != null) {
+            for (PodToleration podToleration : tolerations) {
+                builder.put(podToleration.getKey(), substituteEnv(podToleration.getValue()));
             }
         }
         return builder.build();

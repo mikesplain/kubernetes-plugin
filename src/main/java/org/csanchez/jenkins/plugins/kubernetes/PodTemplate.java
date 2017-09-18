@@ -97,6 +97,8 @@ public class PodTemplate extends AbstractDescribableImpl<PodTemplate> implements
 
     private List<PodAnnotation> annotations = new ArrayList<PodAnnotation>();
 
+    private List<PodToleration> tolerations = new ArrayList<PodToleration>();
+
     private List<PodImagePullSecret> imagePullSecrets = new ArrayList<PodImagePullSecret>();
 
     private transient List<ToolLocationNodeProperty> nodeProperties;
@@ -107,6 +109,7 @@ public class PodTemplate extends AbstractDescribableImpl<PodTemplate> implements
 
     public PodTemplate(PodTemplate from) {
         this.setAnnotations(from.getAnnotations());
+        this.setTolerations(from.getTolerations());
         this.setContainers(from.getContainers());
         this.setImagePullSecrets(from.getImagePullSecrets());
         this.setInstanceCap(from.getInstanceCap());
@@ -404,6 +407,25 @@ public class PodTemplate extends AbstractDescribableImpl<PodTemplate> implements
         if (annotations != null) {
             this.annotations = new ArrayList<PodAnnotation>();
             this.addAnnotations(annotations);
+        }
+    }
+
+    public List<PodToleration> getTolerations() {
+        if (tolerations == null) {
+            return Collections.emptyList();
+        }
+        return tolerations;
+    }
+
+    public void addTolerations(List<PodToleration> tolerations) {
+        this.tolerations.addAll(tolerations);
+    }
+
+    @DataBoundSetter
+    public void setTolerations(List<PodToleration> tolerations) {
+        if (tolerations != null) {
+            this.tolerations = new ArrayList<PodToleration>();
+            this.addTolerations(tolerations);
         }
     }
 

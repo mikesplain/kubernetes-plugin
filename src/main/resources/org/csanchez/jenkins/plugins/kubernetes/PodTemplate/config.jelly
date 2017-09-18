@@ -72,9 +72,13 @@
           <f:textbox/>
      </f:entry>
 
-
     <f:entry field="nodeSelector" title="${%Node Selector}">
       <f:textbox/>
+    </f:entry>
+
+    <f:entry title="${%Tolerations}" description="${%List of tolerations to set in slave pod}" field="tolerations">
+      <f:repeatableHeteroProperty field="tolerations" hasHeader="true" addCaption="Add Tolerations"
+                                  deleteCaption="Delete tolerations Variable" />
     </f:entry>
 
     <f:descriptorList title="${%Node Properties}" descriptors="${h.getNodePropertyDescriptors(descriptor.clazz)}" field="nodeProperties" />

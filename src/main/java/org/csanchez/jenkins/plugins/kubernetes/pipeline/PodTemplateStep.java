@@ -8,6 +8,7 @@ import java.util.Set;
 
 import org.csanchez.jenkins.plugins.kubernetes.ContainerTemplate;
 import org.csanchez.jenkins.plugins.kubernetes.PodAnnotation;
+import org.csanchez.jenkins.plugins.kubernetes.PodToleration;
 import org.csanchez.jenkins.plugins.kubernetes.model.TemplateEnvVar;
 import org.csanchez.jenkins.plugins.kubernetes.volumes.PodVolume;
 import org.csanchez.jenkins.plugins.kubernetes.volumes.workspace.WorkspaceVolume;
@@ -43,6 +44,7 @@ public class PodTemplateStep extends Step implements Serializable {
     private List<PodVolume> volumes = new ArrayList<PodVolume>();
     private WorkspaceVolume workspaceVolume;
     private List<PodAnnotation> annotations = new ArrayList<>();
+    private List<PodToleration> tolerations = new ArrayList<>();
     private List<String> imagePullSecrets = new ArrayList<>();
 
     private int instanceCap = Integer.MAX_VALUE;
@@ -192,7 +194,7 @@ public class PodTemplateStep extends Step implements Serializable {
     public void setNodeUsageMode(String nodeUsageMode) {
         this.nodeUsageMode = Node.Mode.valueOf(nodeUsageMode);
     }
-    
+
     public String getWorkingDir() {
         return workingDir;
     }
@@ -214,6 +216,15 @@ public class PodTemplateStep extends Step implements Serializable {
     @DataBoundSetter
     public void setAnnotations(List<PodAnnotation> annotations) {
         this.annotations = annotations;
+    }
+
+    public List<PodToleration> getTolerations() {
+        return tolerations;
+    }
+
+    @DataBoundSetter
+    public void setTolerations(List<PodToleration> tolerations) {
+        this.tolerations = tolerations;
     }
 
     public List<String> getImagePullSecrets() {

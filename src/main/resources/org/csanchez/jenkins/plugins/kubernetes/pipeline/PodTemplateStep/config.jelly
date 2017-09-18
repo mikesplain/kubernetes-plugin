@@ -46,6 +46,10 @@
         <f:entry field="nodeSelector" title="The node selector">
           <f:textbox/>
         </f:entry>
+        <f:entry title="${%Tolerations}" description="${%List of tolerations to add to the pod metadata}" field="tolerations">
+          <f:repeatableHeteroProperty field="tolerations" hasHeader="true" addCaption="Add Toleration"
+                                      deleteCaption="Delete Toleration" />
+        </f:entry>
         <f:entry field="workingDir" title="${%Working directory}">
           <f:textbox default="/home/jenkins"/>
         </f:entry>

@@ -93,6 +93,10 @@ public class PodTemplateUtils {
         podAnnotations.addAll(template.getAnnotations());
         podAnnotations.addAll(parent.getAnnotations());
 
+        Set<PodToleration> podTolerations = new LinkedHashSet<>();
+        podTolerations.addAll(template.podTolerations());
+        podTolerations.addAll(parent.getTolerations());
+
         Set<PodImagePullSecret> imagePullSecrets = new LinkedHashSet<>();
         imagePullSecrets.addAll(parent.getImagePullSecrets());
         imagePullSecrets.addAll(template.getImagePullSecrets());
@@ -129,6 +133,7 @@ public class PodTemplateUtils {
         podTemplate.setVolumes(new ArrayList<>(combinedVolumes.values()));
         podTemplate.setImagePullSecrets(new ArrayList<>(imagePullSecrets));
         podTemplate.setAnnotations(new ArrayList<>(podAnnotations));
+        podTemplate.setTolerations(new ArrayList<>(podTolerations));
         podTemplate.setNodeProperties(toolLocationNodeProperties);
         podTemplate.setNodeUsageMode(nodeUsageMode);
 
